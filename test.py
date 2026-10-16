@@ -1,1 +1,2 @@
-tertertj jretjret retrt
+
+print "hello world"
