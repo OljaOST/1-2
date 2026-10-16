@@ -1,0 +1,89 @@
+"""Beispielimplementierung zur Einführung in Klassen in Python.
+
+Es wird eine einfache Implementierung eines Bankkontos gezeigt.
+
+Gemäss Aufgabenstellung sollte eine Klasse "Bankkonto" mit
+folgenden Methoden implementiert werden:
+
+    1. Eine Methode einzahlen(self, betrag), um einen Geldbetrag
+       in CHF auf das Konto einzuzahlen
+    2. Eine Methode abhheben(self, betrag), um einen Geldbetrag
+       in CHF vom Konto zu ab zu heben
+    3. Eine Methode kontostand(self) anbieten, mit der man den
+       aktuellen Kontostand in CHF abfragen kann
+    4. Eine Methode kontostand_in_euro(self) anbieten, mit der
+       man den aktuellen Kontostand zu einem Wechselkurs in EUR
+       abfragen kann
+    5. Eine Methode überweisen(self, anderes_konto, betrag) mit
+       der man den angegebenen Betrag auf das angegebene Konto
+       überweisen kann
+"""
+
+
+class Bankkonto:
+    """Klasse zur Verwaltung eines Bankkontos"""
+    def __init__(self, inhaber_name, start_betrag_in_chf):
+        self.inhaber_name = inhaber_name
+        self.kontostand_in_chf = start_betrag_in_chf
+
+    def kontostand(self):
+        """Liefert den aktuellen Kontostand in Schweizer Franken"""
+        return self.kontostand_in_chf
+
+    def kontostand_in_eur(self):
+        """Liefert den aktuellen Kontostand umgerechnet mit einem
+        fixen Konversionsfaktor in Euro."""
+        return self.kontostand_in_chf * 0.97
+
+    def einzahlen(self, einzahl_betrag):
+        """Zahlt den angegebenen Betrag auf das Konto ein."""
+        self.kontostand_in_chf += einzahl_betrag
+
+    def abheben(self, abhebe_betrag):
+        """Hebt den angegebenen Betrag vom Konto ab."""
+        if self.kontostand_in_chf < abhebe_betrag:
+            raise ValueError("Kontostand zu niedrig")
+        self.kontostand_in_chf -= abhebe_betrag
+
+    def überweisen(self, anderes_konto, betrag):
+        """Überweist den angegebenen Betrag auf das angegebenen andere
+        Konto."""
+        # An dieser Stelle könnte man die Überweisung auch durch den Code
+        # implementieren, den wird schon in einzahlen() und abheben()
+        # verwendet haben, also wie folgt
+        #
+        #   self.kontostand_in_chf -= betrag
+        #   anderes_konto.kontostand_in_chf += betrag
+        #
+        # Der Nachteil an dieser Version ist, dass wir alle Ergänzungen,
+        # welche wir in einzahlen() und abheben() noch machen, auch hier
+        # wieder ergänzen müssten. Z.B. haben wir schon Code eingefügt,
+        # um ein Überziehen des Kontos zu verhindern. Dies müssten wir
+        # auch hier wieder einfügen.
+        self.abheben(betrag)
+        anderes_konto.einzahlen(betrag)
+
+    def __str__(self):
+        """Mit der __str__-Methode kann man eine schönere Darstellung eines
+        Bankkontos erreichen, wenn man dieses als Parameter bei einem print()-
+        Aufruf übergibt. In diesem Beispiel wird dazu der/die Kontoinhaber/in
+        gefolgt vom aktuellen Kontostand ausgegeben."""
+        return f"{self.inhaber_name}s Konto: {self.kontostand_in_chf} CHF"
+
+
+mein_konto = Bankkonto("Silvan", 100)
+susans_konto = Bankkonto("Susan", 0)
+
+print(mein_konto.kontostand())
+
+print("Startzustand:")
+print(mein_konto)
+print(susans_konto)
+print()  # Aufrufen der Funktion 'print' ohne Parameter erzeugt einen Zeilenumbruch
+
+
+mein_konto.überweisen(susans_konto, 25)
+
+print("Zustand nach der Überweisung von 25 CHF:")
+print(mein_konto)
+print(susans_konto)
